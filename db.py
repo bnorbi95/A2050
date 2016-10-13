@@ -29,7 +29,7 @@ class Session(db.Model):
 class Game(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey("user.id"))
-    user = db.relationship('User',backref=db.backref('user', lazy='dynamic'))
+    user = db.relationship('User')
     hightile = db.Column(db.Integer, default=2)
     points = db.Column(db.Integer,default=0)
     start = db.Column(db.DateTime,default=datetime.datetime.utcnow)

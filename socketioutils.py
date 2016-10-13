@@ -12,7 +12,7 @@ room="game"
 def conn():
     if isLoggedIn():
         uid=session["uid"]
-        join_room(room)
+        gm.removeTable(uid)
         ng=gm.hasGameWithId(uid)
         u=User.query.get(uid)
         g=Game(u)
@@ -22,8 +22,9 @@ def conn():
             gm.addTable(ng)
             db.session.add(g)
             db.session.commit()
+            join_room(room)
         else: #Already playing (prevent multiple login)
-            return
+            return False
         emit("player_connect",(uid,u.nick),room=room)
         emit("bupdate",printBoard(ng),room=room)
         emit("load_others",gm.getGames(uid))
@@ -32,9 +33,9 @@ def conn():
 def dc():
     if isLoggedIn():
         uid=session["uid"]
+        leave_room(room)
         emit("player_disconnect",uid,room=room)
         gm.removeTable(uid)
-        leave_room(room)
 
 @socketio.on('input')
 def _input(data):
@@ -53,12 +54,13 @@ def _input(data):
         emit("score_update",getSessionScores(),room=room)
 
 @socketio.on("aictl")
-def _aictl(id):
-    game=gm.hasGameWithId(id)
+def _aictl(name):
+    u=User.query.filter_by(nick=name).first()
+    game=gm.hasGameWithId(u.id)
     if game==None:
-        emit("error","No game with your id "+str(id))
+        emit("error","No game with your nick: "+name)
         return
-    session["uid"]=id
+    session["uid"]=u.id
     emit("airead",printBoard(game,includeid=False))
 
 
@@ -72,8 +74,8 @@ def _aiwrite(dir):
             back=printBoard(game,includeid=False)
             if game.last==back:
                 game.times+=1
-                if times>=treshold:
-                    emit("error","no change")
+                if game.times>=treshold:
+                    emit("error","no change in board state for "+str(treshold)+" turns,exiting...\nReload the page to start a new game")
                     return
             else:
                 game.times=0
@@ -82,4 +84,4 @@ def _aiwrite(dir):
             emit("bupdate",str(session["uid"])+" "+back,room=room)
             emit("score_update",getSessionScores(),room=room)
         else:
-            emit("error","Invalid move")
+            emit("error","Invalid move, exiting...\nReload the page to start a new game")

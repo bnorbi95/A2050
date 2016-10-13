@@ -127,3 +127,7 @@ function genScores(data){
 socket.on("score_update",function(data){
   genScores(data);
 });
+
+window.addEventListener("unload",function(){
+  socket.disconnect();
+});

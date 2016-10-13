@@ -36,3 +36,7 @@ div{
   width:120px;
   height:30px;
 }
+
+.my{
+  border:red 2px solid;
+}

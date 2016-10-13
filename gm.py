@@ -1,4 +1,3 @@
-
 from config import keymap
 
 def printBoard(game,includeid=True):
@@ -15,9 +14,12 @@ def printBoard(game,includeid=True):
 outputFolder="files/"
 
 class cGame:
-    def __init__(self,game,uid):
+    def __init__(self,game,uid,nick):
         self.game=game
         self.uid=uid
+        self.nick=nick
+        self.last=str()
+        self.times=0
 
 class GameManager:
     def __init__(self):
@@ -41,7 +43,7 @@ class GameManager:
         rtv=list()
         for game in self.games:
             if game.uid!=id:
-                rtv.append(printBoard(game))
+                rtv.append((printBoard(game),game.nick))
         return rtv
 
     def genOutput(self,id):
@@ -59,7 +61,7 @@ class GameManager:
     def gameOver(self,id):
         for game in self.games:
             if game.uid==id:
-                return game.game._game_over
+                return game.game.game_over
 
     def getHightile(self,id):
         for game in self.games:

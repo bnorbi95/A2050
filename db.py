@@ -49,14 +49,18 @@ def getSessionScores():
         users=User.query.all()
         scores=dict()
         for u in users:
-            scores[u.nick]=0
+            if u.group==0:
+                continue
+            sc=0
             gc=0
             for game in g:
                 if gc>=s.games:
                     break;
                 if game.user==u:
-                    scores[u.nick]+=calcScore(game)
+                    sc+=calcScore(game)
                     gc+=1
+            if gc!=0:
+                scores[u.nick]=(sc,min(gc,s.games))
 
         return scores
     return None

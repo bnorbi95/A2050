@@ -2,7 +2,7 @@ from flask import render_template,request,session,redirect,url_for
 from db import User,getSessionScores,Session
 from forms import LoginForm,SessionForm
 from app import app,db
-from config import isLoggedIn,isGuest
+from config import isLoggedIn,isGuest,isAdmin
 
 @app.route('/',methods=("GET","POST"))
 def login():
@@ -40,7 +40,7 @@ def logout():
 
 @app.route('/choose/')
 def _choose():
-    if isLoggedIn():
+    if isLoggedIn() and isAdmin():
         u=User.query.get(session["uid"])
         return render_template("choose.html",user=u)
     else:
@@ -48,7 +48,7 @@ def _choose():
 
 @app.route("/session/",methods=("GET","POST"))
 def _session():
-    if isLoggedIn():
+    if isLoggedIn() and isAdmin():
         u=User.query.get(session["uid"])
         form=SessionForm(request.form)
         if form.validate_on_submit():

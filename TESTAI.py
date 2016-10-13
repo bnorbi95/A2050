@@ -1,22 +1,24 @@
 from socketIO_client import SocketIO, LoggingNamespace
 import sys
-from time import sleep
 
 myId=1
 kmap={"UP":38,"DOWN":40,"LEFT":37,"RIGHT":39}
-count=1
-def algorithm(data):
-    global count
-    count+=1
-    print(count)
-    dir=kmap["UP"]
 
-    socketIO.emit("aiwrite",dir)
-    #socketIO.wait(seconds=1)
+def algorithm(data):
+    """Write your code here"""
+    dir=kmap["UP"]
+    
+    socketIO.emit("aiwrite",dir) #Don't remove this line
+
+
+def error(msg):
+    print(msg)
+    sys.exit()
 
 socketIO = SocketIO('desktop', 5000, LoggingNamespace)
 
 socketIO.on('airead', algorithm)
+socketIO.on('error', error)
 
 socketIO.emit("aictl",myId)
 socketIO.wait()

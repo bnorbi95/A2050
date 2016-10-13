@@ -19,11 +19,13 @@
       <tr>
         <td>Name</td>
         <td>Score</td>
+        <td>Games played</td>
       </tr>
-        {% for name,points in scores.items() %}
+        {% for name,data in scores.items() %}
       <tr>
         <td>{{name}}</td>
-        <td>{{points}}</td>
+        <td>{{data[0]}}</td>
+        <td>{{data[1]}}</td>
       </tr>
         {% endfor %}
     </table>

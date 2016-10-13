@@ -4,9 +4,11 @@
 <head>
   <meta charset="utf-8">
 
-  <title>Secret</title>
-  <meta name="description" content="Secret project">
+  <title>A2050</title>
+  <meta name="description" content="A2050">
   <meta name="author" content="Norbert Balogh">
+  <meta name="id" content="{{session['uid']}}">
+
 
   <link rel="stylesheet" href="{{url_for('static',filename='master.css')}}">
   <link rel="stylesheet" href="{{url_for('static',filename='index.css')}}">
@@ -24,11 +26,13 @@
       <tr>
         <td>Name</td>
         <td>Score</td>
+        <td>Games played</td>
       </tr>
-        {% for name,points in scores.items() %}
+        {% for name,data in scores.items() %}
       <tr>
         <td>{{name}}</td>
-        <td>{{points}}</td>
+        <td>{{data[0]}}</td>
+        <td>{{data[1]}}</td>
       </tr>
         {% endfor %}
     </table>

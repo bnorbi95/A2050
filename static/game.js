@@ -1,3 +1,7 @@
+function getUID(){
+  return element = document.querySelector('meta[name="id"]').getAttribute("content");
+}
+
 function removeBoard(tid){
   var body = document.getElementsByTagName("BODY")[0];
   var tbls= document.getElementsByClassName("board");
@@ -14,8 +18,10 @@ function addBoard(tid,name){
   var body = document.getElementsByTagName("BODY")[0];
 
   var div = document.createElement("DIV");
-  div.className="parent";
-
+  if(tid!=getUID())
+    div.className="parent";
+  else
+    div.className="my parent";
   var tbl = document.createElement("TABLE");
   tbl.dataset["id"]=tid;
   tbl.className="board";
@@ -85,19 +91,18 @@ socket.on("bupdate",function(board){
 
 socket.on("load_others",function(games){
   for(var i=0;i<games.length;i++){
-    addBoard(parseInt(games[i][0]),"other");
-    updateTables(games[i]);
+    var b=games[i][0].split(" ");
+    addBoard(parseInt(b[0]),games[i][1]);
+    updateTables(games[i][0]);
   }
 
 });
 
 socket.on("player_connect",function(uid,name){
-  console.log(name,"connected with id",uid);
   addBoard(uid,name);
 });
 
 socket.on("player_disconnect",function(uid){
-  console.log("player disconnected with id",uid);
   removeBoard(uid);
 });
 
@@ -107,17 +112,18 @@ function genScores(data){
   row=tbl.insertRow();
   row.insertCell().innerHTML="Name";
   row.insertCell().innerHTML="Score";
+  row.insertCell().innerHTML="Games played";
   keys=Object.keys(data);
   for(var i=0;i<keys.length;i++){
     row=tbl.insertRow();
     row.insertCell().innerHTML=keys[i];
-    row.insertCell().innerHTML=data[keys[i]];
+    row.insertCell().innerHTML=data[keys[i]][0];
+    row.insertCell().innerHTML=data[keys[i]][1];
   }
   div.innerHTML="";
   div.appendChild(tbl);
 }
 
 socket.on("score_update",function(data){
-  console.log(data);
   genScores(data);
 });

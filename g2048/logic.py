@@ -180,7 +180,7 @@ class GameBoard:
 class Game:
     def __init__(self, board_size=4):
         super().__init__()
-        self._game_over = True
+        self.game_over = True
         self.board = GameBoard(board_size=board_size)
         self.score = 0
         self.update_event = None
